@@ -9,28 +9,23 @@ import (
 
 const (
 	apiName   string = "HR2day"
-	loginUrl  string = "https://login.salesforce.com/services/oauth2/token"
+	loginUrl  string = "https://%s.my.salesforce.com/services/oauth2/token"
 	queryPath string = "/services/data/v56.0/query"
 )
 
 type Service struct {
-	domain        string
-	username      string
-	password      string
-	securityToken string
-	clientId      string
-	clientSecret  string
-	httpService   *go_http.Service
-	token         *Token
-	instanceUrl   string
+	domain       string
+	clientId     string
+	clientSecret string
+	httpService  *go_http.Service
+	token        *Token
+	instanceUrl  string
 }
 
 type ServiceConfig struct {
-	Username      string
-	Password      string
-	SecurityToken string
-	ClientId      string
-	ClientSecret  string
+	Domain       string
+	ClientId     string
+	ClientSecret string
 }
 
 func NewService(serviceConfig *ServiceConfig) (*Service, *errortools.Error) {
@@ -44,12 +39,10 @@ func NewService(serviceConfig *ServiceConfig) (*Service, *errortools.Error) {
 	}
 
 	svc := Service{
-		username:      serviceConfig.Username,
-		password:      serviceConfig.Password,
-		securityToken: serviceConfig.SecurityToken,
-		clientId:      serviceConfig.ClientId,
-		clientSecret:  serviceConfig.ClientSecret,
-		httpService:   httpService,
+		domain:       serviceConfig.Domain,
+		clientId:     serviceConfig.ClientId,
+		clientSecret: serviceConfig.ClientSecret,
+		httpService:  httpService,
 	}
 
 	token, e := svc.getToken()

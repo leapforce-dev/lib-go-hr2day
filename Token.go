@@ -14,19 +14,16 @@ type Token struct {
 	TokenType   string `json:"token_type"`
 	IssuedAt    string `json:"issued_at"`
 	Signature   string `json:"signature"`
+	Scope       string `json:"scope"`
 }
 
 func (service *Service) getToken() (*Token, *errortools.Error) {
 	formData := struct {
 		GrantType    string `json:"grant_type"`
-		Username     string `json:"username"`
-		Password     string `json:"password"`
 		ClientId     string `json:"client_id"`
 		ClientSecret string `json:"client_secret"`
 	}{
-		"password",
-		service.username,
-		fmt.Sprintf("%s%s", service.password, service.securityToken),
+		"client_credentials",
 		service.clientId,
 		service.clientSecret,
 	}
@@ -39,7 +36,7 @@ func (service *Service) getToken() (*Token, *errortools.Error) {
 	t := true
 	requestConfig := go_http.RequestConfig{
 		Method:             http.MethodPost,
-		Url:                loginUrl,
+		Url:                fmt.Sprintf(loginUrl, service.domain),
 		XWwwFormUrlEncoded: &t,
 		BodyModel:          formData,
 		NonDefaultHeaders:  &header,
